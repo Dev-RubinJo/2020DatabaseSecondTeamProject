@@ -1,10 +1,12 @@
 package Interface;
 
+import Controller.DatabaseController;
 import Interface.Model.Employee;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -23,8 +25,11 @@ public class CompanyFrame extends JFrame {
 
     // TODO: DB에서 가져와서 추후 데이터 넣어주기
     Vector<String> departmentList = new Vector<>();
-
     List<Employee> employeeList = new ArrayList<Employee>();
+
+    // Database Property
+    DatabaseController databaseController = new DatabaseController();
+    Connection con = null;
 
     // GUI Config
     Dimension frameDim = new Dimension(1000, 700);
@@ -48,24 +53,21 @@ public class CompanyFrame extends JFrame {
     JTable employeeTableView;
     JScrollPane scrollList;
 
-    JLabel selectedEmployeeLabel = new JLabel();
+    JLabel selectedEmployeeLabel = new JLabel("Now Not selected");
 
     public CompanyFrame() {
-        setLocation(800, 100);
+        setLocation(100, 100);
         setTitle("Company");
         setSize(frameDim);
         setLayout(null);
 
+        con = databaseController.connectDatabase();
+        departmentList.add("All");
+        databaseController.retrieveDepartmentList(departmentList, con);
+
+        configureGUIComponents();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        for(int i = 0; i < 40; i++) {
-            Employee employee;
-            employee = new Employee("test" + i, 123456789, "2020-12-12", "asdf asdf asdf ", "M", 30000.0, "asdfasd", "SW");
-            employeeList.add(employee);
-        }
-        
-        configureGUIComponents();
         setVisible(true);
     }
 
@@ -285,7 +287,12 @@ public class CompanyFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            employeeList.clear();
+            String department = departmentComboBox.getSelectedItem().toString();
+            databaseController.retrieveEmployeeList(employeeList, department, con);
+            
             updateTableView();
+            selectedEmployeeLabel.setText("Now Not selected");
             System.out.println("Search Button Clicked");
         }
     }
