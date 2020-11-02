@@ -25,7 +25,6 @@ public class CompanyFrame extends JFrame {
 
     Employee selectedEmployee = null;
 
-    // TODO: DB에서 가져와서 추후 데이터 넣어주기
     Vector<String> departmentList = new Vector<>();
     List<Employee> employeeList = new ArrayList<Employee>();
 
