@@ -23,6 +23,8 @@ public class CompanyFrame extends JFrame {
     Boolean isSupervisor = true;
     Boolean isDepartment = true;
 
+    Employee selectedEmployee = null;
+
     // TODO: DB에서 가져와서 추후 데이터 넣어주기
     Vector<String> departmentList = new Vector<>();
     List<Employee> employeeList = new ArrayList<Employee>();
@@ -186,6 +188,12 @@ public class CompanyFrame extends JFrame {
         System.out.println(employeeTableView.getColumnCount());
     }
 
+    void checkDatabaseConnection() {
+        if (con == null) {
+            con = databaseController.connectDatabase();
+        }
+    }
+
     // Listener Class
     class NameCheckBoxListener implements ItemListener {
 
@@ -288,6 +296,7 @@ public class CompanyFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             employeeList.clear();
+            checkDatabaseConnection();
             String department = departmentComboBox.getSelectedItem().toString();
             databaseController.retrieveEmployeeList(employeeList, department, con);
             
@@ -307,6 +316,7 @@ public class CompanyFrame extends JFrame {
         @Override
         public void mouseReleased(MouseEvent e) {
             int row = employeeTableView.getSelectedRow();
+            selectedEmployee = employeeList.get(row);
             selectedEmployeeLabel.setText("Selected " + employeeList.get(row).getName());
         }
 

@@ -46,10 +46,11 @@ public class DatabaseController {
             String stmt1 = "SELECT Dname FROM DEPARTMENT";
             PreparedStatement p = con.prepareStatement(stmt1);
             ResultSet r = p.executeQuery();
-
             while(r.next()) {
                 departmentList.add(r.getString(1));
             }
+            r.close();
+            p.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,6 +82,35 @@ public class DatabaseController {
                 String dName = r.getString(8);
                 employeeList.add(new Employee(name, ssn, birthDate, address, gender, salary, superName, dName));
             }
+            r.close();
+            p.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteEmployee(Employee employee, Connection con) {
+        try {
+            String stmt1 = "DELETE FROM EMPLOYEE\n" +
+                    "WHERE Ssn = " + employee.getSsn();
+            PreparedStatement p = con.prepareStatement(stmt1);
+            ResultSet r = p.executeQuery();
+            r.close();
+            p.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateEmployeeSalary(Employee employee, Double salary, Connection con) {
+        try {
+            String stmt1 = "UPDATE EMPLOYEE\n" +
+                    "SET Salary = " + salary + "\n" +
+                    "WHERE Ssn = " + employee.getSsn();
+            PreparedStatement p = con.prepareStatement(stmt1);
+            ResultSet r = p.executeQuery();
+            r.close();
+            p.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
