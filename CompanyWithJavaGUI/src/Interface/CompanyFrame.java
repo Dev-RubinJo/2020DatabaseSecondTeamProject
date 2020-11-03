@@ -1,7 +1,8 @@
 package Interface;
 
 import Controller.DatabaseController;
-import Interface.Model.Employee;
+import Model.Employee;
+import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,6 +56,11 @@ public class CompanyFrame extends JFrame {
     JScrollPane scrollList;
 
     JLabel selectedEmployeeLabel = new JLabel("Now Not selected");
+    JLabel newSalaryGuideLabel = new JLabel("새로운 급여 입력");
+    JTextField newSalaryTextField = new JTextField();
+    JButton editSalaryButton = new JButton("Edit");
+    JButton addNewEmployeeButton = new JButton("Create new Employee");
+    JButton deleteEmployeeButton = new JButton("Delete Employee");
 
     public CompanyFrame() {
         setLocation(100, 100);
@@ -105,10 +111,23 @@ public class CompanyFrame extends JFrame {
         setEmployeeTableView();
 
         // 하단 Edit UI 설정부분
-        JPanel editContainer = new JPanel();
-        editContainer.add(selectedEmployeeLabel);
-        editContainer.setLocation(0, 550);
-        editContainer.setSize(1000, 100);
+        JPanel selectionContainer = new JPanel();
+        selectedEmployeeLabel.setLocation(0, 0);
+        selectionContainer.add(selectedEmployeeLabel);
+        selectionContainer.setLocation(0, 550);
+        selectionContainer.setSize(1000, 30);
+        add(selectionContainer);
+
+        JPanel editContainer = new JPanel(new GridLayout());
+        editContainer.add(newSalaryGuideLabel);
+        editContainer.add(newSalaryTextField);
+        editContainer.add(editSalaryButton);
+        editContainer.add(new JPanel());
+        editContainer.add(new JPanel());
+//        editContainer.add(addNewEmployeeButton);
+        editContainer.add(deleteEmployeeButton);
+        editContainer.setLocation(0, 580);
+        editContainer.setSize(1000, 50);
         add(editContainer);
 
         // 각 필요 컴포넌트들 Listener 적용부분
@@ -138,6 +157,12 @@ public class CompanyFrame extends JFrame {
 
         SearchButtonListener searchButtonListener = new SearchButtonListener();
         searchButton.addActionListener(searchButtonListener);
+
+        EditSalaryButtonListener editSalaryButtonListener = new EditSalaryButtonListener();
+        editSalaryButton.addActionListener(editSalaryButtonListener);
+
+        DeleteEmployeeButtonListener deleteEmployeeButtonListener = new DeleteEmployeeButtonListener();
+        deleteEmployeeButton.addActionListener(deleteEmployeeButtonListener);
     }
 
     void setEmployeeTableView() {
@@ -166,6 +191,7 @@ public class CompanyFrame extends JFrame {
             if (isDepartment) data.add(employeeList.get(i).getDepartment());
             dataSet.add(data);
         }
+        System.out.println(employeeList.size());
 
         employeeTableView = new JTable(dataSet, columns);
         employeeTableView.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -191,6 +217,16 @@ public class CompanyFrame extends JFrame {
         if (con == null) {
             con = databaseController.connectDatabase();
         }
+    }
+
+    void search() {
+        employeeList.clear();
+        checkDatabaseConnection();
+        String department = departmentComboBox.getSelectedItem().toString();
+        databaseController.retrieveEmployeeList(employeeList, department, con);
+
+        updateTableView();
+        selectedEmployeeLabel.setText("Now Not selected");
     }
 
     // Listener Class
@@ -294,13 +330,7 @@ public class CompanyFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            employeeList.clear();
-            checkDatabaseConnection();
-            String department = departmentComboBox.getSelectedItem().toString();
-            databaseController.retrieveEmployeeList(employeeList, department, con);
-            
-            updateTableView();
-            selectedEmployeeLabel.setText("Now Not selected");
+            search();
             System.out.println("Search Button Clicked");
         }
     }
@@ -324,6 +354,46 @@ public class CompanyFrame extends JFrame {
 
         @Override
         public void mouseExited(MouseEvent e) { }
+    }
+
+    class EditSalaryButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Double newSalary = Double.parseDouble(newSalaryTextField.getText());
+                // TODO: 수정 기능 적용
+                if (selectedEmployee != null) {
+                    System.out.println("급여 수정");
+                    checkDatabaseConnection();
+                    databaseController.updateEmployeeSalary(selectedEmployee, newSalary, con);
+                    search();
+                    newSalaryTextField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "직원 선택 후 이용 가능합니다");
+                }
+            } catch (NumberFormatException exception) {
+                System.out.println("입력값 형태를 다시 확인해주세요");
+                JOptionPane.showMessageDialog(null, "입력값 형태를 다시 확인해주세요");
+            }
+        }
+    }
+
+    class DeleteEmployeeButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedEmployee == null) {
+                System.out.println("직원 선택 후 이용 가능합니다");
+                JOptionPane.showMessageDialog(null, "직원 선택 후 이용 가능합니다");
+            } else {
+                // TODO: Delete 기능 적용
+                System.out.println("직원 삭제");
+                checkDatabaseConnection();
+                databaseController.deleteEmployee(selectedEmployee, con);
+                search();
+            }
+        }
     }
 
 }

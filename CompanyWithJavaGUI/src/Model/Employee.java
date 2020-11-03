@@ -1,8 +1,4 @@
-package Interface.Model;
-
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
+package Model;
 
 public class Employee {
 

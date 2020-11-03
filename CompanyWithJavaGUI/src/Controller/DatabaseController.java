@@ -1,7 +1,8 @@
 package Controller;
 
-import Interface.Model.Employee;
+import Model.Employee;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.List;
 import java.util.Vector;
@@ -80,6 +81,7 @@ public class DatabaseController {
                 Double salary = r.getDouble(6);
                 String superName = r.getString(7);
                 String dName = r.getString(8);
+                System.out.println(name);
                 employeeList.add(new Employee(name, ssn, birthDate, address, gender, salary, superName, dName));
             }
             r.close();
@@ -93,9 +95,10 @@ public class DatabaseController {
         try {
             String stmt1 = "DELETE FROM EMPLOYEE\n" +
                     "WHERE Ssn = " + employee.getSsn();
+            System.out.println(stmt1);
             PreparedStatement p = con.prepareStatement(stmt1);
-            ResultSet r = p.executeQuery();
-            r.close();
+            int r = p.executeUpdate();
+            JOptionPane.showMessageDialog(null, employee.getName() + "이 삭제되었습니다.");
             p.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,8 +111,8 @@ public class DatabaseController {
                     "SET Salary = " + salary + "\n" +
                     "WHERE Ssn = " + employee.getSsn();
             PreparedStatement p = con.prepareStatement(stmt1);
-            ResultSet r = p.executeQuery();
-            r.close();
+            int r = p.executeUpdate();
+            JOptionPane.showMessageDialog(null, employee.getName() + "의 급여가 " +  salary + "로 수정되었습니다.");
             p.close();
         } catch (SQLException e) {
             e.printStackTrace();
