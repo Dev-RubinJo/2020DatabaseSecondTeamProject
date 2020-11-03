@@ -35,6 +35,7 @@ public class DatabaseController {
         try {
             if (con != null) {
                 con.close();
+                con = null;
                 System.out.println("연결이 해제되었습니다.");
             }
         } catch (SQLException e) {
@@ -81,7 +82,6 @@ public class DatabaseController {
                 Double salary = r.getDouble(6);
                 String superName = r.getString(7);
                 String dName = r.getString(8);
-                System.out.println(name);
                 employeeList.add(new Employee(name, ssn, birthDate, address, gender, salary, superName, dName));
             }
             r.close();
@@ -95,7 +95,6 @@ public class DatabaseController {
         try {
             String stmt1 = "DELETE FROM EMPLOYEE\n" +
                     "WHERE Ssn = " + employee.getSsn();
-            System.out.println(stmt1);
             PreparedStatement p = con.prepareStatement(stmt1);
             int r = p.executeUpdate();
             JOptionPane.showMessageDialog(null, employee.getName() + "이 삭제되었습니다.");

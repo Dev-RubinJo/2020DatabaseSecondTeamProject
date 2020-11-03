@@ -2,7 +2,6 @@ package Interface;
 
 import Controller.DatabaseController;
 import Model.Employee;
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,6 +61,7 @@ public class CompanyFrame extends JFrame {
     JButton addNewEmployeeButton = new JButton("Create new Employee");
     JButton deleteEmployeeButton = new JButton("Delete Employee");
 
+    // Initializer
     public CompanyFrame() {
         setLocation(100, 100);
         setTitle("Company");
@@ -78,6 +78,7 @@ public class CompanyFrame extends JFrame {
         setVisible(true);
     }
 
+    // Helper
     void configureGUIComponents() {
         // Add GUI Component
         // Department UI 설정부분
@@ -191,7 +192,6 @@ public class CompanyFrame extends JFrame {
             if (isDepartment) data.add(employeeList.get(i).getDepartment());
             dataSet.add(data);
         }
-        System.out.println(employeeList.size());
 
         employeeTableView = new JTable(dataSet, columns);
         employeeTableView.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -210,7 +210,6 @@ public class CompanyFrame extends JFrame {
     void updateTableView() {
         remove(tableViewBorderPanel);
         setEmployeeTableView();
-        System.out.println(employeeTableView.getColumnCount());
     }
 
     void checkDatabaseConnection() {
@@ -219,8 +218,15 @@ public class CompanyFrame extends JFrame {
         }
     }
 
+    void disconnectDatabase() {
+        if (con != null) {
+            databaseController.disconnectDatabase(con);
+        }
+    }
+
     void search() {
         employeeList.clear();
+        selectedEmployee = null;
         checkDatabaseConnection();
         String department = departmentComboBox.getSelectedItem().toString();
         databaseController.retrieveEmployeeList(employeeList, department, con);
@@ -331,7 +337,6 @@ public class CompanyFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             search();
-            System.out.println("Search Button Clicked");
         }
     }
 
@@ -364,16 +369,15 @@ public class CompanyFrame extends JFrame {
                 Double newSalary = Double.parseDouble(newSalaryTextField.getText());
                 // TODO: 수정 기능 적용
                 if (selectedEmployee != null) {
-                    System.out.println("급여 수정");
                     checkDatabaseConnection();
                     databaseController.updateEmployeeSalary(selectedEmployee, newSalary, con);
                     search();
                     newSalaryTextField.setText("");
+                    selectedEmployee = null;
                 } else {
                     JOptionPane.showMessageDialog(null, "직원 선택 후 이용 가능합니다");
                 }
             } catch (NumberFormatException exception) {
-                System.out.println("입력값 형태를 다시 확인해주세요");
                 JOptionPane.showMessageDialog(null, "입력값 형태를 다시 확인해주세요");
             }
         }
@@ -384,16 +388,13 @@ public class CompanyFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedEmployee == null) {
-                System.out.println("직원 선택 후 이용 가능합니다");
                 JOptionPane.showMessageDialog(null, "직원 선택 후 이용 가능합니다");
             } else {
-                // TODO: Delete 기능 적용
-                System.out.println("직원 삭제");
                 checkDatabaseConnection();
                 databaseController.deleteEmployee(selectedEmployee, con);
                 search();
+                selectedEmployee = null;
             }
         }
     }
-
 }
