@@ -45,6 +45,8 @@ public class DatabaseController {
 
     public void retrieveDepartmentList(Vector<String> departmentList, Connection con) {
         try {
+            departmentList.clear();
+            departmentList.add("All");
             String stmt1 = "SELECT Dname FROM DEPARTMENT";
             PreparedStatement p = con.prepareStatement(stmt1);
             ResultSet r = p.executeQuery();

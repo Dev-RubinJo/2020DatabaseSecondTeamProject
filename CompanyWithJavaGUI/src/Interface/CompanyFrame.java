@@ -58,8 +58,11 @@ public class CompanyFrame extends JFrame {
     JLabel newSalaryGuideLabel = new JLabel("새로운 급여 입력");
     JTextField newSalaryTextField = new JTextField();
     JButton editSalaryButton = new JButton("Edit");
+    JButton addNewDepartmentButton = new JButton("Create new Department");
     JButton addNewEmployeeButton = new JButton("Create new Employee");
     JButton deleteEmployeeButton = new JButton("Delete Employee");
+
+    CompanyFrame companyFrame = this;
 
     // Initializer
     public CompanyFrame() {
@@ -69,7 +72,6 @@ public class CompanyFrame extends JFrame {
         setLayout(null);
 
         con = databaseController.connectDatabase();
-        departmentList.add("All");
         databaseController.retrieveDepartmentList(departmentList, con);
 
         configureGUIComponents();
@@ -123,47 +125,29 @@ public class CompanyFrame extends JFrame {
         editContainer.add(newSalaryGuideLabel);
         editContainer.add(newSalaryTextField);
         editContainer.add(editSalaryButton);
-        editContainer.add(new JPanel());
-        editContainer.add(new JPanel());
-//        editContainer.add(addNewEmployeeButton);
+//        editContainer.add(new JPanel());
+//        editContainer.add(new JPanel());
+        editContainer.add(addNewDepartmentButton);
+        editContainer.add(addNewEmployeeButton);
         editContainer.add(deleteEmployeeButton);
         editContainer.setLocation(0, 580);
         editContainer.setSize(1000, 50);
         add(editContainer);
 
         // 각 필요 컴포넌트들 Listener 적용부분
-        NameCheckBoxListener nameCheckBoxListener = new NameCheckBoxListener();
-        nameCheckBox.addItemListener(nameCheckBoxListener);
+        nameCheckBox.addItemListener(new NameCheckBoxListener());
+        ssnCheckBox.addItemListener(new SsnCheckBoxListener());
+        bDateCheckBox.addItemListener(new BirthDateCheckBoxListener());
+        addressCheckBox.addItemListener(new AddressCheckBoxListener());
+        sexCheckBox.addItemListener(new SexCheckBoxListener());
+        salaryCheckBox.addItemListener(new SalaryCheckBoxListener());
+        supervisorCheckBox.addItemListener(new SupervisorCheckBoxListener());
+        departmentCheckBox.addItemListener(new DepartmentCheckBoxListener());
+        searchButton.addActionListener(new SearchButtonListener());
+        editSalaryButton.addActionListener(new EditSalaryButtonListener());
+        deleteEmployeeButton.addActionListener(new DeleteEmployeeButtonListener());
 
-        SsnCheckBoxListener ssnCheckBoxListener = new SsnCheckBoxListener();
-        ssnCheckBox.addItemListener(ssnCheckBoxListener);
-
-        BirthDateCheckBoxListener birthDateCheckBoxListener = new BirthDateCheckBoxListener();
-        bDateCheckBox.addItemListener(birthDateCheckBoxListener);
-
-        AddressCheckBoxListener addressCheckBoxListener = new AddressCheckBoxListener();
-        addressCheckBox.addItemListener(addressCheckBoxListener);
-
-        SexCheckBoxListener sexCheckBoxListener = new SexCheckBoxListener();
-        sexCheckBox.addItemListener(sexCheckBoxListener);
-
-        SalaryCheckBoxListener salaryCheckBoxListener = new SalaryCheckBoxListener();
-        salaryCheckBox.addItemListener(salaryCheckBoxListener);
-
-        SupervisorCheckBoxListener supervisorCheckBoxListener = new SupervisorCheckBoxListener();
-        supervisorCheckBox.addItemListener(supervisorCheckBoxListener);
-
-        DepartmentCheckBoxListener departmentCheckBoxListener = new DepartmentCheckBoxListener();
-        departmentCheckBox.addItemListener(departmentCheckBoxListener);
-
-        SearchButtonListener searchButtonListener = new SearchButtonListener();
-        searchButton.addActionListener(searchButtonListener);
-
-        EditSalaryButtonListener editSalaryButtonListener = new EditSalaryButtonListener();
-        editSalaryButton.addActionListener(editSalaryButtonListener);
-
-        DeleteEmployeeButtonListener deleteEmployeeButtonListener = new DeleteEmployeeButtonListener();
-        deleteEmployeeButton.addActionListener(deleteEmployeeButtonListener);
+        addNewEmployeeButton.addActionListener(new AddNewEmployeeButtonListener());
     }
 
     void setEmployeeTableView() {
@@ -367,7 +351,6 @@ public class CompanyFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 Double newSalary = Double.parseDouble(newSalaryTextField.getText());
-                // TODO: 수정 기능 적용
                 if (selectedEmployee != null) {
                     checkDatabaseConnection();
                     databaseController.updateEmployeeSalary(selectedEmployee, newSalary, con);
@@ -395,6 +378,33 @@ public class CompanyFrame extends JFrame {
                 search();
                 selectedEmployee = null;
             }
+        }
+    }
+
+
+    // 여기부터 추가 기능생성
+
+    class AddNewEmployeeButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name, birthDate, address, sex, supervisor, department;
+            int ssn;
+            Double salary;
+            new AddNewEmployeeFrame(companyFrame);
+//            String test = JOptionPane.showInputDialog(null, "")
+        }
+    }
+
+    public void showSomething() {
+        JOptionPane.showMessageDialog(null, "test");
+    }
+
+    class AddNewDepartmentButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
         }
     }
 }
