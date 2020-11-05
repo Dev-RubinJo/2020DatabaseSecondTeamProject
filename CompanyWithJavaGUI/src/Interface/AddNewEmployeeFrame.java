@@ -80,8 +80,14 @@ public class AddNewEmployeeFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("OkButton Selected");
-            JOptionPane.showConfirmDialog(null, "직원을 추가하시겠습니까?", "직원 추가", JOptionPane.OK_CANCEL_OPTION);
-
+            int selection = JOptionPane.showConfirmDialog(null, "직원을 추가하시겠습니까?", "직원 추가", JOptionPane.OK_CANCEL_OPTION);
+            if (selection == JOptionPane.OK_OPTION) {
+                System.out.println("OK");
+                System.out.println(companyFrame.isName);
+                dispose();
+            } else {
+                System.out.println("cancel");
+            }
         }
     }
 

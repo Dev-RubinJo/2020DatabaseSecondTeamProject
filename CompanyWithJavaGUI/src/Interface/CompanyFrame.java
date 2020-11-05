@@ -26,7 +26,7 @@ public class CompanyFrame extends JFrame {
     Employee selectedEmployee = null;
 
     Vector<String> departmentList = new Vector<>();
-    List<Employee> employeeList = new ArrayList<Employee>();
+    List<Employee> employeeList = new ArrayList<>();
 
     // Database Property
     DatabaseController databaseController = new DatabaseController();
@@ -392,7 +392,6 @@ public class CompanyFrame extends JFrame {
             int ssn;
             Double salary;
             new AddNewEmployeeFrame(companyFrame);
-//            String test = JOptionPane.showInputDialog(null, "")
         }
     }
 
