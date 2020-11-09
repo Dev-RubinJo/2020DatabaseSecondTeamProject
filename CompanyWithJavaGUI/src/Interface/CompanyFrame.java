@@ -125,9 +125,9 @@ public class CompanyFrame extends JFrame {
         editContainer.add(newSalaryGuideLabel);
         editContainer.add(newSalaryTextField);
         editContainer.add(editSalaryButton);
+        editContainer.add(new JPanel());
 //        editContainer.add(new JPanel());
-//        editContainer.add(new JPanel());
-        editContainer.add(addNewDepartmentButton);
+//        editContainer.add(addNewDepartmentButton);
         editContainer.add(addNewEmployeeButton);
         editContainer.add(deleteEmployeeButton);
         editContainer.setLocation(0, 580);

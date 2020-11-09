@@ -70,8 +70,8 @@ public class DatabaseController {
             String stmt1 = "SELECT DISTINCT CONCAT(EMPLOYEE.Fname, \" \", EMPLOYEE.Minit, \" \", EMPLOYEE.Lname) as Name,\n" +
                     "       EMPLOYEE.Ssn, EMPLOYEE.Bdate, EMPLOYEE.Address, EMPLOYEE.Sex, EMPLOYEE.Salary,\n" +
                     "       IF (EMPLOYEE.Super_ssn IS NOT NULL, CONCAT(MANAGER.Fname, \" \", MANAGER.Minit, \" \", MANAGER.Lname), 'NULL')  as Super_name, DEPARTMENT.Dname\n" +
-                    "FROM EMPLOYEE, EMPLOYEE AS MANAGER, DEPARTMENT\n" +
-                    "WHERE (EMPLOYEE.Super_ssn IS NULL OR EMPLOYEE.Super_ssn = MANAGER.Ssn) AND EMPLOYEE.Dno = DEPARTMENT.Dnumber " + query;
+                    "FROM EMPLOYEE INNER JOIN EMPLOYEE AS MANAGER ON (EMPLOYEE.Super_ssn IS NULL OR EMPLOYEE.Super_ssn = MANAGER.Ssn)INNER JOIN DEPARTMENT\n" +
+                    "ON EMPLOYEE.Dno = DEPARTMENT.Dnumber " + query;
             PreparedStatement p = con.prepareStatement(stmt1);
             ResultSet r = p.executeQuery();
 
